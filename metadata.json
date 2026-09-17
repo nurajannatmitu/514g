@@ -1,0 +1,6 @@
+{
+  "name": "OVERLAP",
+  "description": "Client-side pairwise document similarity analyzer for PDF and DOCX files with TF-IDF cosine and Jaccard metrics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
