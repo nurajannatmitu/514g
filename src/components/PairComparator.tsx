@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeftRight, FileText, CheckCircle2, Layers } from 'lucide-react';
+import { ArrowLeftRight, FileText, CheckCircle2, Layers, Columns2 } from 'lucide-react';
 import { UploadedDoc } from '../types';
 import { computeComparison } from '../utils/similarityEngine';
 import { CircularMeter } from './CircularMeter';
@@ -15,6 +15,7 @@ interface PairComparatorProps {
   onSelectA: (id: string) => void;
   onSelectB: (id: string) => void;
   onSwap: () => void;
+  onOpenSideBySide?: () => void;
 }
 
 export const PairComparator: React.FC<PairComparatorProps> = ({
@@ -24,6 +25,7 @@ export const PairComparator: React.FC<PairComparatorProps> = ({
   onSelectA,
   onSelectB,
   onSwap,
+  onOpenSideBySide,
 }) => {
   const readyDocs = docs.filter((d) => d.status === 'ready');
   const docA = readyDocs.find((d) => d.id === selectedAId);
@@ -168,6 +170,34 @@ export const PairComparator: React.FC<PairComparatorProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Action button to open side-by-side matching */}
+          {onOpenSideBySide && (
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 rounded-lg bg-[#101420] border border-[#1e3458]">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-md bg-[#17243c] border border-[#234275] text-[#60a5fa]">
+                  <Columns2 className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-xs font-semibold text-[#efe6d4] block">
+                    Inspect Matching Passages
+                  </span>
+                  <span className="text-[11px] text-[#8e8579]">
+                    Dual-column highlighted text comparison with synchronized scroll
+                  </span>
+                </div>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={onOpenSideBySide}
+                className="text-xs font-mono text-[#93c5fd] border-[#29487d] hover:bg-[#1b2b46] hover:text-[#bfdbfe] shrink-0"
+              >
+                Open Side by side &rarr;
+              </Button>
+            </div>
+          )}
 
           {/* Overlap Metrics Table */}
           <div className="rounded-lg border border-[#202028] bg-[#0c0c10] overflow-hidden">

@@ -12,6 +12,7 @@ import {
   Layers,
   FileCheck2,
   Info,
+  Columns2,
 } from 'lucide-react';
 import { UploadedDoc } from './types';
 import { extractTextFromFile } from './utils/textExtractor';
@@ -21,6 +22,7 @@ import { FileUploader } from './components/FileUploader';
 import { DocumentList } from './components/DocumentList';
 import { PairComparator } from './components/PairComparator';
 import { HeatmapMatrix } from './components/HeatmapMatrix';
+import { SideBySideViewer } from './components/SideBySideViewer';
 import { Card, CardHeader, CardTitle, CardContent } from './components/ui/Card';
 import { Button } from './components/ui/Button';
 import { Badge } from './components/ui/Badge';
@@ -29,7 +31,7 @@ export default function App() {
   const [docs, setDocs] = useState<UploadedDoc[]>([]);
   const [selectedAId, setSelectedAId] = useState<string>('');
   const [selectedBId, setSelectedBId] = useState<string>('');
-  const [activeTab, setActiveTab] = useState<'comparator' | 'heatmap'>('comparator');
+  const [activeTab, setActiveTab] = useState<'comparator' | 'sidebyside' | 'heatmap'>('comparator');
   const [showHelpModal, setShowHelpModal] = useState<boolean>(false);
 
   // Synchronize slots (D1...D5) whenever docs array changes
@@ -305,7 +307,7 @@ export default function App() {
           <div className="lg:col-span-7 flex flex-col gap-4">
             {/* View Switcher Tabs */}
             <div className="flex items-center justify-between border-b border-[#1f1f26] pb-2">
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 flex-wrap">
                 <button
                   type="button"
                   onClick={() => setActiveTab('comparator')}
@@ -320,6 +322,24 @@ export default function App() {
                   {selectedAId && selectedBId && (
                     <span className="font-mono text-[10px] text-[#d47a3a] ml-1">
                       [{docs.find((d) => d.id === selectedAId)?.label || 'A'} vs {docs.find((d) => d.id === selectedBId)?.label || 'B'}]
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('sidebyside')}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    activeTab === 'sidebyside'
+                      ? 'bg-[#141b29] text-[#efe6d4] border border-[#243e69]'
+                      : 'text-[#8e8579] hover:text-[#efe6d4] hover:bg-[#121218]'
+                  }`}
+                >
+                  <Columns2 className="w-3.5 h-3.5 text-[#60a5fa]" />
+                  <span>Side by side</span>
+                  {readyDocsCount >= 2 && (
+                    <span className="font-mono text-[9px] bg-[#1d2b45] text-[#93c5fd] px-1.5 py-0.5 rounded border border-[#2b4472]">
+                      Matches
                     </span>
                   )}
                 </button>
@@ -351,6 +371,19 @@ export default function App() {
             {/* Tab 1: Pairwise Comparator */}
             {activeTab === 'comparator' && (
               <PairComparator
+                docs={docs}
+                selectedAId={selectedAId}
+                selectedBId={selectedBId}
+                onSelectA={(id) => setSelectedAId(id)}
+                onSelectB={(id) => setSelectedBId(id)}
+                onSwap={handleSwapPair}
+                onOpenSideBySide={() => setActiveTab('sidebyside')}
+              />
+            )}
+
+            {/* Tab 2: Side by Side Matching View */}
+            {activeTab === 'sidebyside' && (
+              <SideBySideViewer
                 docs={docs}
                 selectedAId={selectedAId}
                 selectedBId={selectedBId}
