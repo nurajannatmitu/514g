@@ -1,6 +1,6 @@
-Live site: https://<github-username>.github.io/overlap/
+Live site: https://<github-username>.github.io/514g/
 
-Owner steps: create repo overlap → push main → Settings → Pages → Source = GitHub Actions.
+Owner steps: create repo 514g → push main → Settings → Pages → Source = GitHub Actions.
 Success = shared github.io link works for any visitor.
 
 ---
